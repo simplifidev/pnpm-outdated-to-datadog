@@ -1,0 +1,24 @@
+name: "pnpm-outdated-to-datadog"
+description: "Github action to send metrics on outdated dependencies to datadog"
+inputs:
+  datadog-api-key:
+    required: true
+  github-token:
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: true
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+    - run: pnpm outdated --json | node ${GITHUB_ACTION_PATH}/calcOutdatedMetrics.js | ${GITHUB_ACTION_PATH}/shipMetrics.sh
+      shell: bash {0}
+      env:
+        DATADOG_API_KEY: ${{ inputs.datadog-api-key }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
