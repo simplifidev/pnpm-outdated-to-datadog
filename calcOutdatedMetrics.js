@@ -30,7 +30,13 @@ function main() {
 }
 
 const semverToArr = (semverStr) =>
-  semverStr.split(".").map((str) => parseInt(str));
+  semverStr.split(".").map((str) => {
+    const int = parseInt(str);
+    if (int === NaN) {
+      throw new error(`Could not parse semver string of: ${semverStr}`);
+    }
+    return int;
+  });
 
 const sortPackages = (parsedData) => {
   const behindPatch = [];
