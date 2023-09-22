@@ -30,13 +30,7 @@ function main() {
 }
 
 const semverToArr = (semverStr) =>
-  semverStr.split(".").map((str) => {
-    const int = parseInt(str);
-    if (int === NaN) {
-      throw new error(`Could not parse semver string of: ${semverStr}`);
-    }
-    return int;
-  });
+  semverStr.split(".").map((str) => parseInt(str));
 
 const sortPackages = (parsedData) => {
   const behindPatch = [];
@@ -44,8 +38,16 @@ const sortPackages = (parsedData) => {
   const behindMajor = [];
 
   Object.keys(parsedData).forEach((packageName) => {
-    const { current: currentVersion, latest: latestVersion } =
-      parsedData[packageName];
+    const {
+      current: currentVersion,
+      latest: latestVersion,
+      isDeprecated,
+    } = parsedData[packageName];
+
+    if (isDeprecated) {
+      behindMajor.push(packageName);
+      return;
+    }
 
     // handle forked packages (ex., bell, nslds-parser)
     if (latestVersion === "exotic") return;
