@@ -38,8 +38,16 @@ const sortPackages = (parsedData) => {
   const behindMajor = [];
 
   Object.keys(parsedData).forEach((packageName) => {
-    const { current: currentVersion, latest: latestVersion } =
-      parsedData[packageName];
+    const {
+      current: currentVersion,
+      latest: latestVersion,
+      isDeprecated,
+    } = parsedData[packageName];
+
+    if (isDeprecated) {
+      behindMajor.push(packageName);
+      return;
+    }
 
     // handle forked packages (ex., bell, nslds-parser)
     if (latestVersion === "exotic") return;
