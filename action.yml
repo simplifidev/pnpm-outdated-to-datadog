@@ -12,7 +12,8 @@ inputs:
     required: false
     default: .
   node-version:
-    required: true
+    required: false
+    default: '18'
 runs:
   using: "composite"
   steps:
